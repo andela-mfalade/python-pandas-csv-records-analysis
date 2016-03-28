@@ -158,11 +158,11 @@ def main():
     This is the master script that initiates all the other scripts.
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('first_file_path', help="Path to first CSV file.")
-    parser.add_argument('second_file_path', help="Path to second CSV file.")
+    parser.add_argument('path1', help="Path to first CSV file.")
+    parser.add_argument('path2', help="Path to second CSV file.")
     args = parser.parse_args()
-    account_project_keys = get_file_df(args.responsys_file_path)
-    compare_keys_with_files(args.chartio_file_path, account_project_keys)
+    account_project_keys = get_file_df(args.path1)
+    compare_keys_with_files(args.path2, account_project_keys)
 
 
 if __name__ == '__main__':
