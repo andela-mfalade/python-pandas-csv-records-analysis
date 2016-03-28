@@ -15,9 +15,9 @@ logging.basicConfig(level=logging.DEBUG)
 mathching_records_path = 'mathing_records.csv'
 non_mathching_records_path = 'non_mathing_records.csv'
 records_diff = "customers_in_chartio_but_not_in_responsys.csv"
-no_project_key_path = 'chartio_records_with_no_project_key.csv'
-no_customer_key_path = 'chartio_records_with_no_customer_key.csv'
-no_project_status_path = 'chartio_records_with_no_project_status.csv'
+no_project_key_path = 'records_with_no_project_key.csv'
+no_customer_key_path = 'records_with_no_customer_key.csv'
+no_project_status_path = 'records_with_no_project_status.csv'
 
 CHARTIO_GRADES = ['exceeded', 'failed', 'passed', 'ungradeable']
 
@@ -37,18 +37,14 @@ def get_file_df(file_path):
     for contact_info in contacts_df.itertuples():
         # Each unique_key is a concatenation of the contact_info's account_key
         # and the project_id.
-        contact_id = contact_info[2]
-        project_id = contact_info[1]
+        _, contact_id, project_id = contact_info
         unique_key = "{x}-{y}".format(x=contact_id, y=project_id)
-        contact_tuple = {
-            unique_key: contact_info
-        }
-        target_dict.update(contact_tuple)
+        target_dict.update({unique_key: contact_info})
     return target_dict
 
 
 def write_to_csv(file_path, content):
-    """Write content to file in file path.
+    """Write content to file.
 
     This simple method writes the given content to the file in the  specified
     file path.
@@ -106,13 +102,13 @@ def translate_result(student_grade):
     Returns:
         Student grade equivalent in another file
     """
-    translator = {
+    thesauraus = {
         'ungradeable': ['INCOMPLETE', 'UNGRADED', 'SUBMITTED'],
         'failed': ['INCOMPLETE'],
         'passed': ['PASSED'],
         'exceeded': ['DISTINCTION']
     }
-    return translator[student_grade]
+    return thesauraus[student_grade]
 
 
 def check_status(unique_key, project_status, keys_dict):
@@ -142,11 +138,8 @@ def check_status(unique_key, project_status, keys_dict):
         write_to_csv(records_diff, record)
 
 
-def compare_keys_with_files_in(file_path, keys_dict):
-    """Go through a file and extract and processes its contents.
-
-    This is one very shitty doc string
-    """
+def compare_keys_with_files(file_path, keys_dict):
+    """Go through a file and extract and processes its contents."""
     contacts_df = pd.read_csv(file_path)
     for contact_info in contacts_df.itertuples():
         index, project_status, project_key, customer_key = contact_info
@@ -164,13 +157,12 @@ def main():
 
     This is the master script that initiates all the other scripts.
     """
-    logger.info("Script started..")
     parser = argparse.ArgumentParser()
     parser.add_argument('first_file_path', help="Path to first CSV file.")
     parser.add_argument('second_file_path', help="Path to second CSV file.")
     args = parser.parse_args()
     account_project_keys = get_file_df(args.responsys_file_path)
-    compare_keys_with_files_in(args.chartio_file_path, account_project_keys)
+    compare_keys_with_files(args.chartio_file_path, account_project_keys)
 
 
 if __name__ == '__main__':
