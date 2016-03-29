@@ -12,8 +12,8 @@ logger = logging.getLogger(__file__)
 logging.basicConfig(level=logging.DEBUG)
 
 
-mathching_records_path = 'mathing_records.csv'
-non_mathching_records_path = 'non_mathing_records.csv'
+mathching_records_path = 'matching_records.csv'
+non_mathching_records_path = 'non_matching_records.csv'
 records_diff = "customers_in_chartio_but_not_in_responsys.csv"
 no_project_key_path = 'records_with_no_project_key.csv'
 no_customer_key_path = 'records_with_no_customer_key.csv'
